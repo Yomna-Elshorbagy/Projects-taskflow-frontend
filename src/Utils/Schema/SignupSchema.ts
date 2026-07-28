@@ -21,8 +21,6 @@ export const signupSchema = z
     mobileNumber: z
       .string()
       .regex(/^01[01245]\d{8}$/, "Invalid Egyptian mobile number"),
-
-    recoveryEmail: z.string().email("Invalid recovery email").optional().or(z.literal("")),
   })
   .refine((data) => data.password === data.Cpassword, {
     message: "Password and Confirm Password do not match",

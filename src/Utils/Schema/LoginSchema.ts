@@ -10,11 +10,11 @@ export const loginSchema = z
       .optional()
       .or(z.literal("")),
 
-    password: z.string().min(1, "Password is required"),
+  password: z.string().min(1, "Password is required"),
   })
   .refine((data) => data.email || data.mobileNumber, {
     message: "Either email or mobile number must be provided",
     path: ["email"],
-  });
+});
 
 export type LoginSchemaType = z.infer<typeof loginSchema>;
