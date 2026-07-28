@@ -23,13 +23,13 @@ const Sidebar = () => {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-      ? "bg-gray-100 text-gray-900"
-      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+      ? "bg-[#1a6b5a]/10 text-[#1a6b5a]"
+      : "text-gray-600 hover:bg-[#1a6b5a]/5 hover:text-[#1a6b5a]"
     }`;
 
 
   return (
-    <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0">
+    <aside className="w-64 h-screen bg-white border-r border-gray-200 shadow-[4px_0_8px_rgba(0,0,0,0.05)] flex flex-col fixed left-0 top-0 z-20">
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-gray-100">
         <Link to="/" className="flex items-center gap-2">

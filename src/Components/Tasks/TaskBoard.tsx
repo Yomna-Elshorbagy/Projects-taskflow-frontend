@@ -9,9 +9,27 @@ interface TaskBoardProps {
 
 const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onTaskClick }) => {
   const columns = [
-    { id: "To Do", title: "To Do", indicator: "bg-gray-400" },
-    { id: "In Progress", title: "In Progress", indicator: "bg-amber-400" },
-    { id: "Done", title: "Done", indicator: "bg-emerald-500" },
+    {
+      id: "To Do",
+      title: "To Do",
+      indicator: "bg-slate-400",
+      bgColor: "bg-slate-50/70",
+      borderColor: "border-t-slate-400"
+    },
+    {
+      id: "In Progress",
+      title: "In Progress",
+      indicator: "bg-amber-400",
+      bgColor: "bg-amber-50/50",
+      borderColor: "border-t-amber-400"
+    },
+    {
+      id: "Done",
+      title: "Done",
+      indicator: "bg-emerald-500",
+      bgColor: "bg-emerald-50/40",
+      borderColor: "border-t-emerald-500"
+    },
   ];
 
   return (
@@ -20,7 +38,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onTaskClick }) => {
         const colTasks = tasks.filter((t) => t.status === col.id);
 
         return (
-          <div key={col.id} className="flex flex-col gap-4">
+          <div key={col.id} className={`flex flex-col gap-4 ${col.bgColor} p-4 rounded-xl border border-gray-200 border-t-4 ${col.borderColor} shadow-sm`}>
             {/* Column Header */}
             <div className="flex items-center justify-between pb-2">
               <div className="flex items-center gap-2">

@@ -19,7 +19,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
   return (
     <div
       onClick={() => onClick(task)}
-      className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-[#1a6b5a]/30 transition-all cursor-pointer flex flex-col gap-3"
+      className="bg-white p-4 rounded-lg border border-gray-200 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-[#1a6b5a]/40 transition-all duration-200 cursor-pointer flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">
         <Badge variant={priorityVariant}>{task.priority}</Badge>

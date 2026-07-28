@@ -13,7 +13,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <Link
       to={`/projects/${project._id}/tasks`}
-      className="block group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md hover:border-[#1a6b5a]/30 transition-all duration-200"
+      className="block group bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-[#1a6b5a]/40 transition-all duration-300"
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center gap-3">

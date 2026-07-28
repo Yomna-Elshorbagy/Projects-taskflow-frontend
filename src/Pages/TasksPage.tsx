@@ -7,6 +7,7 @@ import { Plus, Search, LayoutGrid, List, Users } from "lucide-react";
 import SEO from "../Shared/SEO/SEO";
 import AvatarGroup from "../Components/UI/AvatarGroup";
 import TaskBoard from "../Components/Tasks/TaskBoard";
+import TaskTable from "../Components/Tasks/TaskTable";
 import CreateTaskModal from "../Components/Tasks/CreateTaskModal";
 import TaskDetailsDrawer from "../Components/Tasks/TaskDetailsDrawer";
 import ManageMembersModal from "../Components/Projects/ManageMembersModal";
@@ -19,6 +20,7 @@ const TasksPage = () => {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("All statuses");
     const [priorityFilter, setPriorityFilter] = useState("All priorities");
+    const [viewMode, setViewMode] = useState<"board" | "table">("board");
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -72,8 +74,24 @@ const TasksPage = () => {
                             max={3}
                         />
                         <div className="flex bg-gray-100 p-1 rounded-md">
-                            <button className="p-1.5 bg-white rounded shadow-sm text-gray-900"><LayoutGrid className="w-4 h-4" /></button>
-                            <button className="p-1.5 text-gray-500 hover:text-gray-900 transition-colors"><List className="w-4 h-4" /></button>
+                            <button
+                                onClick={() => setViewMode("board")}
+                                className={`p-1.5 rounded transition-all ${
+                                    viewMode === "board" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
+                                }`}
+                                title="Kanban Board View"
+                            >
+                                <LayoutGrid className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => setViewMode("table")}
+                                className={`p-1.5 rounded transition-all ${
+                                    viewMode === "table" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
+                                }`}
+                                title="List Table View"
+                            >
+                                <List className="w-4 h-4" />
+                            </button>
                         </div>
                         {user?.role === "admin" && (
                             <button
@@ -141,11 +159,13 @@ const TasksPage = () => {
                     </div>
                 </div>
 
-                {/* Board */}
+                {/* Content Area */}
                 {tasksLoading ? (
                     <div className="flex-1 flex items-center justify-center text-gray-500">Loading tasks...</div>
-                ) : (
+                ) : viewMode === "board" ? (
                     <TaskBoard tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                ) : (
+                    <TaskTable tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
                 )}
             </div>
 
