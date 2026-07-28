@@ -26,7 +26,7 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
     reset,
     formState: { errors },
   } = useForm<CreateTaskSchemaType>({
-    resolver: zodResolver(createTaskSchema),
+    resolver: zodResolver(createTaskSchema) as any,
     defaultValues: {
       status: "To Do",
       priority: "Medium",

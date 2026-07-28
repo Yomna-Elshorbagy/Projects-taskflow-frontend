@@ -34,7 +34,7 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateTaskSchemaType>({
-    resolver: zodResolver(updateTaskSchema),
+    resolver: zodResolver(updateTaskSchema) as any,
   });
 
   useEffect(() => {
