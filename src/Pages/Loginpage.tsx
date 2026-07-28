@@ -97,7 +97,7 @@ function LoginPage() {
                             id="login-email"
                             label="Email"
                             type="email"
-                            placeholder="sarah@taskflow.io"
+                            placeholder="user@taskflow.io"
                             autoComplete="email"
                             error={errors.email}
                             {...register("email")}
@@ -112,12 +112,6 @@ function LoginPage() {
                                 >
                                     Password
                                 </label>
-                                <Link
-                                    to="/forgot-password"
-                                    className="text-xs font-medium text-[#1a6b5a] hover:underline"
-                                >
-                                    Forgot?
-                                </Link>
                             </div>
                             <input
                                 id="login-password"

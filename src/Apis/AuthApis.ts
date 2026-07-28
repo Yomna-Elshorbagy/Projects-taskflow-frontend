@@ -2,7 +2,7 @@ import axios from "axios";
 import type { SignupSchemaType } from "../Utils/Schema/SignupSchema";
 import type { LoginSchemaType } from "../Utils/Schema/LoginSchema";
 import { baseURL } from "../Constants/BaseUrl";
-import type { AuthResponse, LogoutResponse } from "../Interfaces/IUser";
+import type { AuthResponse, LogoutResponse, UsersResponse } from "../Interfaces/IUser";
 
 const getHeaders = () => ({
   "Content-Type": "application/json",
@@ -46,6 +46,17 @@ export const userLogout = async (
       },
     }
   );
+
+  return res.data;
+};
+
+export const getAllUsers = async (token: string): Promise<UsersResponse> => {
+  const res = await axios.get<UsersResponse>(`${baseURL}/auth/users`, {
+    headers: {
+      ...getHeaders(),
+      authentication: `bearer ${token}`,
+    },
+  });
 
   return res.data;
 };

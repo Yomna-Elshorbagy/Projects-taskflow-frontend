@@ -20,6 +20,8 @@ export interface Project {
   description?: string;
   creator: ProjectCreator;
   members: ProjectMember[];
+  totalTasks: number;
+  completedTasks: number;
   createdAt: string;
   updatedAt: string;
 }

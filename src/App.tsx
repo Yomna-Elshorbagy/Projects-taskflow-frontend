@@ -5,9 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { store, useAppSelector } from "./Store/store";
 import SignupPage from "./Pages/SignupPage";
 import LoginPage from "./Pages/Loginpage";
-import HomePage from "./Pages/HomePage";
 import ProjectsPage from "./Pages/ProjectsPage";
 import TasksPage from "./Pages/TasksPage";
+import DashboardLayout from "./Shared/Layouts/DashboardLayout";
 
 import "./App.css";
 
@@ -47,31 +47,18 @@ function AppRoutes() {
           }
         />
 
-        {/* Protected routes */}
+        {/* Protected routes wrapped in DashboardLayout */}
         <Route
-          path="/"
           element={
             <RequireAuth>
-              <HomePage />
+              <DashboardLayout />
             </RequireAuth>
           }
-        />
-        <Route
-          path="/projects"
-          element={
-            <RequireAuth>
-              <ProjectsPage />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/tasks"
-          element={
-            <RequireAuth>
-              <TasksPage />
-            </RequireAuth>
-          }
-        />
+        >
+          <Route path="/" element={<Navigate to="/projects" replace />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:projectId/tasks" element={<TasksPage />} />
+        </Route>
 
         {/* Fallback → signup */}
         <Route path="*" element={<Navigate to="/signup" replace />} />

@@ -38,3 +38,8 @@ export interface LogoutResponse {
   message: string;
   success: boolean;
 }
+
+export interface UsersResponse {
+  success: boolean;
+  data: User[];
+}
