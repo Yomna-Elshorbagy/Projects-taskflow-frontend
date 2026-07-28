@@ -19,6 +19,13 @@ export interface UpdateTaskData {
   priority?: TaskPriority;
 }
 
+export interface IStatusHistory {
+  oldStatus?: string;
+  newStatus: string;
+  changedBy: User;
+  changedAt: string;
+}
+
 export interface Task {
   _id: string;
   title: string;
@@ -29,6 +36,7 @@ export interface Task {
   creator: User;
   assignee: User;
   project: string;
+  statusHistory?: IStatusHistory[];
   createdAt: string;
   updatedAt: string;
 }

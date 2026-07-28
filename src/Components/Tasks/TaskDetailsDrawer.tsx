@@ -203,6 +203,39 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
             {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
           </div>
 
+          {/* Activity Log */}
+          {task.statusHistory && task.statusHistory.length > 0 && (
+            <div className="mt-6 flex-1">
+              <h4 className="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-3">
+                Activity Log
+              </h4>
+              <div className="space-y-3 bg-gray-50 p-4 rounded-md border border-gray-100 max-h-[200px] overflow-y-auto">
+                {task.statusHistory.map((history, idx) => (
+                  <div key={idx} className="text-sm text-gray-600 flex items-start gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#1a6b5a] mt-1.5 flex-shrink-0"></div>
+                    <div>
+                      <span className="font-medium text-gray-900">{history.changedBy?.userName || "Unknown User"}</span>
+                      <span> changed status </span>
+                      {history.oldStatus ? (
+                        <>
+                          <span>from </span>
+                          <span className="font-medium">{history.oldStatus}</span>
+                          <span> to </span>
+                        </>
+                      ) : (
+                        <span>to </span>
+                      )}
+                      <span className="font-medium">{history.newStatus}</span>
+                      <div className="text-xs text-gray-400 mt-0.5">
+                        {new Date(history.changedAt).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end pt-4 border-t border-gray-100 gap-3">
             <button
               type="button"
