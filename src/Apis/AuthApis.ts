@@ -4,10 +4,10 @@ import type { LoginSchemaType } from "../Utils/Schema/LoginSchema";
 import { baseURL } from "../Constants/BaseUrl";
 import type { AuthResponse, LogoutResponse } from "../Interfaces/IUser";
 
-const headers = {
+const getHeaders = () => ({
   "Content-Type": "application/json",
   "x-client-user-agent": navigator.userAgent,
-};
+});
 
 export const userLogin = async (
   data: LoginSchemaType
@@ -15,7 +15,7 @@ export const userLogin = async (
   const res = await axios.post<AuthResponse>(
     `${baseURL}/auth/login`,
     data,
-    { headers }
+    { headers: getHeaders() }
   );
 
   return res.data;
@@ -27,7 +27,7 @@ export const userSignup = async (
   const res = await axios.post<AuthResponse>(
     `${baseURL}/auth/signup`,
     data,
-    { headers }
+    { headers: getHeaders() }
   );
 
   return res.data;
@@ -41,7 +41,7 @@ export const userLogout = async (
     {},
     {
       headers: {
-        ...headers,
+        ...getHeaders(),
         authentication: `bearer ${token}`,
       },
     }
