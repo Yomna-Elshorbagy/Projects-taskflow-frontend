@@ -87,7 +87,7 @@ const Sidebar = () => {
               All projects
             </NavLink>
             {user?.role === "admin" && (
-              <NavLink to="/admin" className={navLinkClass}>
+              <NavLink to="/projects" className={navLinkClass}>
                 <Settings className="w-4 h-4 text-gray-400" />
                 Admin panel
               </NavLink>
