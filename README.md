@@ -11,6 +11,9 @@ TaskFlow is a modern, high-performance project and task management application d
 - **Task Management**: New tasks are created via the **"Create Task" Modal**, opened from the "New task" button in the project header. Tasks require a title, description, due date, and an assignee (selectable from the project's member list).
 - **Interactive Task Drawer**: Clicking on any Task Card (or table row) slides open the **Task Details Drawer** from the right side of the screen. This drawer allows users to seamlessly edit task information, update statuses, and change priorities without losing their place on the board.
 - **Activity Log Tracking**: Embedded within the Task Details Drawer is a real-time **Activity Log** that tracks the historical status changes of the task, showing exactly who moved a task and when.
+- **Server-Side Pagination, Filtering & Search**: Shifted client-side computations to high-performance, server-side processing for both Projects and Tasks, enabling seamless, paginated data loads, dynamic title/description search, and state filtering.
+- **Premium Pagination Component**: Added a responsive, glassmorphic custom `Pagination` component featuring items range indicators, previous/next controls, page button groups, page limit dropdowns, and quick page jump inputs.
+- **Kanban Column Scrollbars**: Configured Kanban Board column containers with a custom, thin scrollbar that automatically activates when a column contains more than 5 cards.
 - **Advanced State Management**: Combines Redux Toolkit for global auth state with React Query for powerful server-state caching, invalidation, and background synchronization.
 
 ## 🔐 Role-Based Access Control (RBAC)
