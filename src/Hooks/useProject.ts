@@ -5,10 +5,18 @@ import type { CreateProjectSchemaType, UpdateProjectSchemaType } from "../Utils/
 import { addMember, createProject, deleteProject, getProjectById, getProjects, removeMember, updateProject } from "../Apis/ProjectApi";
 
 
-export const useGetProjects = (token: string) => {
+export const useGetProjects = (
+  token: string,
+  params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sort?: string;
+  }
+) => {
   return useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjects(token),
+    queryKey: ["projects", params],
+    queryFn: () => getProjects(token, params),
   });
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useGetTasks } from "../Hooks/useTask";
 import { useGetProjectById } from "../Hooks/useProject";
@@ -11,6 +11,7 @@ import TaskTable from "../Components/Tasks/TaskTable";
 import CreateTaskModal from "../Components/Tasks/CreateTaskModal";
 import TaskDetailsDrawer from "../Components/Tasks/TaskDetailsDrawer";
 import ManageMembersModal from "../Components/Projects/ManageMembersModal";
+import Pagination from "../Components/UI/Pagination";
 import type { Task } from "../Interfaces/ITasks";
 
 const TasksPage = () => {
@@ -24,23 +25,29 @@ const TasksPage = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(5);
 
     const { user } = useAppSelector((state) => state.auth);
 
+    // Reset page to 1 when filters or search change
+    useEffect(() => {
+        setPage(1);
+    }, [search, statusFilter, priorityFilter]);
+
     // Fetch data
     const { data: projectData, isLoading: projectLoading } = useGetProjectById(projectId || "", token || "");
-    const { data: tasksData, isLoading: tasksLoading } = useGetTasks(projectId || "", token || "");
+    const { data: tasksData, isLoading: tasksLoading } = useGetTasks(projectId || "", token || "", {
+        page: viewMode === "table" ? page : undefined,
+        limit: viewMode === "table" ? limit : undefined,
+        search: search || undefined,
+        status: statusFilter === "All statuses" ? undefined : statusFilter,
+        priority: priorityFilter === "All priorities" ? undefined : priorityFilter,
+    });
 
     const project = projectData?.data;
-    const allTasks = tasksData?.data || [];
-
-    // Client-side filtering
-    const filteredTasks = allTasks.filter((task) => {
-        const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
-        const matchesStatus = statusFilter === "All statuses" || task.status === statusFilter;
-        const matchesPriority = priorityFilter === "All priorities" || task.priority === priorityFilter;
-        return matchesSearch && matchesStatus && matchesPriority;
-    });
+    const filteredTasks = tasksData?.data || [];
+    const pagination = tasksData?.pagination || { page: 1, limit: 10, totalItems: 0, totalPages: 1 };
 
     if (projectLoading) {
         return <div className="p-8">Loading project...</div>;
@@ -76,18 +83,16 @@ const TasksPage = () => {
                         <div className="flex bg-gray-100 p-1 rounded-md">
                             <button
                                 onClick={() => setViewMode("board")}
-                                className={`p-1.5 rounded transition-all ${
-                                    viewMode === "board" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
-                                }`}
+                                className={`p-1.5 rounded transition-all ${viewMode === "board" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
+                                    }`}
                                 title="Kanban Board View"
                             >
                                 <LayoutGrid className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode("table")}
-                                className={`p-1.5 rounded transition-all ${
-                                    viewMode === "table" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
-                                }`}
+                                className={`p-1.5 rounded transition-all ${viewMode === "table" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
+                                    }`}
                                 title="List Table View"
                             >
                                 <List className="w-4 h-4" />
@@ -154,7 +159,7 @@ const TasksPage = () => {
                             </select>
                         </div>
                         <div className="text-gray-400 text-xs font-medium ml-4">
-                            {filteredTasks.length} of {allTasks.length}
+                            Showing {filteredTasks.length} of {pagination.totalItems} tasks
                         </div>
                     </div>
                 </div>
@@ -162,10 +167,25 @@ const TasksPage = () => {
                 {/* Content Area */}
                 {tasksLoading ? (
                     <div className="flex-1 flex items-center justify-center text-gray-500">Loading tasks...</div>
-                ) : viewMode === "board" ? (
-                    <TaskBoard tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
                 ) : (
-                    <TaskTable tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                    <div className="flex-1 flex flex-col justify-between">
+                        {viewMode === "board" ? (
+                            <TaskBoard tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                        ) : (
+                            <TaskTable tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                        )}
+
+                        {viewMode === "table" && (
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={pagination.totalPages}
+                                totalItems={pagination.totalItems}
+                                limit={pagination.limit}
+                                onPageChange={(p) => setPage(p)}
+                                onLimitChange={(l) => setLimit(l)}
+                            />
+                        )}
+                    </div>
                 )}
             </div>
 

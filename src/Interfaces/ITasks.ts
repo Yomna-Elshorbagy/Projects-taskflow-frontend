@@ -50,6 +50,12 @@ export interface TaskResponse {
 export interface TasksResponse {
   success: boolean;
   data: Task[];
+  pagination?: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+  };
 }
 
 export interface MessageResponse {

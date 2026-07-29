@@ -10,6 +10,10 @@ export const useGetTasks = (
     status?: string;
     priority?: string;
     assignee?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    sort?: string;
   }
 ) => {
   return useQuery({

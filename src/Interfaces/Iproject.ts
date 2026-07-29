@@ -35,6 +35,12 @@ export interface ProjectResponse {
 export interface ProjectsResponse {
   success: boolean;
   data: Project[];
+  pagination?: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+  };
 }
 
 export interface MessageResponse {

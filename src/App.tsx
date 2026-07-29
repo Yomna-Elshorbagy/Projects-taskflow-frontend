@@ -22,10 +22,10 @@ function RequireGuest({ children }: { children: React.ReactNode }) {
   return token ? <Navigate to="/" replace /> : <>{children}</>;
 }
 
-/** Redirect unauthenticated users to signup */
+/** Redirect unauthenticated users to login */
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = useAppSelector((state) => state.auth.token);
-  return token ? <>{children}</> : <Navigate to="/signup" replace />;
+  return token ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
 function AppRoutes() {

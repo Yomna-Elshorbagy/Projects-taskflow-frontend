@@ -39,6 +39,10 @@ export const getTasks = async (
     status?: string;
     priority?: string;
     assignee?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    sort?: string;
   }
 ): Promise<TasksResponse> => {
   const res = await axios.get<TasksResponse>(

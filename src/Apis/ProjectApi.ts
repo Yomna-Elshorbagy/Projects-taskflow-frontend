@@ -29,12 +29,19 @@ export const createProject = async (
 };
 
 export const getProjects = async (
-  token: string
+  token: string,
+  params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    sort?: string;
+  }
 ): Promise<ProjectsResponse> => {
   const res = await axios.get<ProjectsResponse>(
     `${baseURL}/projects`,
     {
       headers: headers(token),
+      params,
     }
   );
 
