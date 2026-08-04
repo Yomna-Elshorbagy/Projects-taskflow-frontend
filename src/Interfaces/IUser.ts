@@ -25,6 +25,11 @@ export interface User {
   role: Roles;
   status: Status;
   isVerified: boolean;
+  address?: string;
+  image?: {
+    secure_url: string;
+    public_id: string;
+  };
 }
 
 export interface AuthResponse {
@@ -42,4 +47,17 @@ export interface LogoutResponse {
 export interface UsersResponse {
   success: boolean;
   data: User[];
+}
+
+export interface UpdateProfileData {
+  userName?: string;
+  mobileNumber?: string;
+  address?: string;
+  gender?: Gender;
+}
+
+export interface ProfileResponse {
+  success: boolean;
+  message?: string;
+  data: User;
 }

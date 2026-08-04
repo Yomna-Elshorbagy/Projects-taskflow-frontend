@@ -10,6 +10,7 @@ const SignupPage = lazy(() => import("./Pages/SignupPage"));
 const LoginPage = lazy(() => import("./Pages/Loginpage"));
 const ProjectsPage = lazy(() => import("./Pages/ProjectsPage"));
 const TasksPage = lazy(() => import("./Pages/TasksPage"));
+const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const NotFoundPage = lazy(() => import("./Pages/NotFoundPage"));
 
 import "./App.css";
@@ -62,6 +63,7 @@ function AppRoutes() {
             <Route path="/" element={<Navigate to="/projects" replace />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:projectId/tasks" element={<TasksPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           {/* Fallback → 404 Not Found */}

@@ -4,6 +4,7 @@ import {
   Settings,
   LogOut,
   FolderDot,
+  UserCircle,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../Store/store";
 import { useGetProjects } from "../Hooks/useProject";
@@ -85,6 +86,10 @@ const Sidebar = () => {
             <NavLink to="/projects" className={navLinkClass} end>
               <LayoutGrid className="w-4 h-4 text-gray-400" />
               All projects
+            </NavLink>
+            <NavLink to="/profile" className={navLinkClass}>
+              <UserCircle className="w-4 h-4 text-gray-400" />
+              My Profile
             </NavLink>
             {user?.role === "admin" && (
               <NavLink to="/projects" className={navLinkClass}>

@@ -2,7 +2,7 @@ import axios from "axios";
 import type { SignupSchemaType } from "../Utils/Schema/SignupSchema";
 import type { LoginSchemaType } from "../Utils/Schema/LoginSchema";
 import { baseURL } from "../Constants/BaseUrl";
-import type { AuthResponse, LogoutResponse, UsersResponse } from "../Interfaces/IUser";
+import type { AuthResponse, LogoutResponse, UsersResponse, UpdateProfileData, ProfileResponse } from "../Interfaces/IUser";
 
 const getHeaders = () => ({
   "Content-Type": "application/json",
@@ -58,5 +58,28 @@ export const getAllUsers = async (token: string): Promise<UsersResponse> => {
     },
   });
 
+  return res.data;
+};
+
+export const getProfile = async (token: string): Promise<ProfileResponse> => {
+  const res = await axios.get<ProfileResponse>(`${baseURL}/auth/profile`, {
+    headers: {
+      ...getHeaders(),
+      authentication: `bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+
+export const updateProfile = async (
+  token: string,
+  data: UpdateProfileData
+): Promise<ProfileResponse> => {
+  const res = await axios.put<ProfileResponse>(`${baseURL}/auth/profile`, data, {
+    headers: {
+      ...getHeaders(),
+      authentication: `bearer ${token}`,
+    },
+  });
   return res.data;
 };
