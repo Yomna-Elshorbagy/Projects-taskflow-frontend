@@ -73,11 +73,51 @@ export const useUpdateTask = () => {
       token: string;
     }) => updateTask(projectId, taskId, data, token),
 
-    onSuccess: (_, variables) => {
+    // 1. When mutate is called:
+    onMutate: async ({ projectId, taskId, data }) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["tasks", projectId] });
+
+      // Snapshot the previous values across all active task lists for this project
+      const queryCache = queryClient.getQueryCache();
+      const queries = queryCache.findAll({ queryKey: ["tasks", projectId] });
+      
+      const previousQueriesData = queries.map((query) => ({
+        queryKey: query.queryKey,
+        data: query.state.data,
+      }));
+
+      // Optimistically update all matching queries in the cache
+      queries.forEach((query) => {
+        queryClient.setQueryData(query.queryKey, (old: any) => {
+          if (!old || !old.data) return old;
+          return {
+            ...old,
+            data: old.data.map((task: any) =>
+              task._id === taskId ? { ...task, ...data } : task
+            ),
+          };
+        });
+      });
+
+      // Return a context object with the snapshotted values
+      return { previousQueriesData };
+    },
+
+    // 2. If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, variables, context) => {
+      if (context?.previousQueriesData) {
+        context.previousQueriesData.forEach(({ queryKey, data }) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+
+    // 3. Always refetch after success or error to sync with the server
+    onSettled: (_, __, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["tasks", variables.projectId],
       });
-
       queryClient.invalidateQueries({
         queryKey: ["task", variables.taskId],
       });

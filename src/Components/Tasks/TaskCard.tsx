@@ -6,6 +6,7 @@ import Avatar from "../UI/Avatar";
 interface TaskCardProps {
   task: Task;
   onClick: (task: Task) => void;
+  onDragStart?: (e: React.DragEvent) => void;
 }
 
 const formatDate = (dateString: string) => {
@@ -13,13 +14,15 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onClick, onDragStart }) => {
   const priorityVariant = task.priority.toLowerCase() as "high" | "medium" | "low";
 
   return (
     <div
       onClick={() => onClick(task)}
-      className="bg-white p-4 rounded-lg border border-gray-200 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-[#1a6b5a]/40 transition-all duration-200 cursor-pointer flex flex-col gap-3"
+      draggable={!!onDragStart}
+      onDragStart={onDragStart}
+      className="bg-white p-4 rounded-lg border border-gray-200 shadow-md hover:shadow-lg hover:-translate-y-1 hover:border-[#1a6b5a]/40 transition-all duration-200 cursor-pointer flex flex-col gap-3 active:cursor-grabbing active:opacity-60"
     >
       <div className="flex items-center justify-between">
         <Badge variant={priorityVariant}>{task.priority}</Badge>

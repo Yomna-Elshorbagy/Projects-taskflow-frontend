@@ -170,7 +170,12 @@ const TasksPage = () => {
                 ) : (
                     <div className="flex-1 flex flex-col justify-between">
                         {viewMode === "board" ? (
-                            <TaskBoard tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                            <TaskBoard
+                                tasks={filteredTasks}
+                                onTaskClick={(task) => setSelectedTask(task)}
+                                projectId={projectId || ""}
+                                token={token || ""}
+                            />
                         ) : (
                             <TaskTable tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
                         )}

@@ -49,7 +49,7 @@ const ProjectsPage = () => {
                                 placeholder="Search projects..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#1a6b5a]/20 focus:border-[#1a6b5a] transition-all"
+                                className="w-full pl-9 pr-4 py-2 bg-white border-2 border-gray-300 rounded-xl text-sm outline-none focus:border-[#1a6b5a] focus:ring-4 focus:ring-[#1a6b5a]/10 transition-all placeholder:text-gray-400 shadow-sm"
                             />
                         </div>
                         <button
