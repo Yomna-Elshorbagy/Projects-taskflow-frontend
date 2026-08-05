@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import type { Task } from "../../Interfaces/ITasks";
+import type { TaskStatus } from "../../Types/TaskType";
 import TaskCard from "./TaskCard";
 import { useUpdateTask } from "../../Hooks/useTask";
 
@@ -18,6 +19,7 @@ interface ColumnDef {
   indicator: string;
   bgColor: string;
   borderColor: string;
+  defaultOpen?: boolean;
 }
 
 function CollapsibleColumn({
@@ -29,9 +31,9 @@ function CollapsibleColumn({
   col: ColumnDef;
   tasks: Task[];
   onTaskClick: (task: Task) => void;
-  onDropTask: (taskId: string, targetStatus: "To Do" | "In Progress" | "Done") => void;
+  onDropTask: (taskId: string, targetStatus: TaskStatus) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(col.defaultOpen ?? true);
   const [isDragOver, setIsDragOver] = useState(false);
 
   // HTML5 Drag handlers
@@ -51,7 +53,7 @@ function CollapsibleColumn({
     setIsDragOver(false);
     const taskId = e.dataTransfer.getData("text/plain");
     if (taskId) {
-      onDropTask(taskId, col.id as "To Do" | "In Progress" | "Done");
+      onDropTask(taskId, col.id as TaskStatus);
     }
   };
 
@@ -63,24 +65,29 @@ function CollapsibleColumn({
   if (!isOpen) {
     return (
       <div
-        className={`flex flex-col items-center py-4 w-12 rounded-xl border border-gray-200 border-t-4 ${col.borderColor} ${col.bgColor} shadow-sm cursor-pointer transition-all duration-300 h-[600px]`}
+        className={`flex flex-col items-center py-4 w-12 rounded-xl border border-gray-200 border-t-4 ${col.borderColor} ${col.bgColor} shadow-sm cursor-pointer hover:shadow-md hover:bg-gray-50/80 transition-all duration-300 min-h-[450px] shrink-0 self-stretch`}
         onClick={() => setIsOpen(true)}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         <button
-          className="p-1 hover:bg-gray-200/50 rounded transition-colors mb-4"
+          className="p-1 hover:bg-gray-200/60 rounded transition-colors mb-6"
           title={`Expand ${col.title}`}
         >
-          <ChevronRight className="w-4 h-4 text-gray-500 rotate-0 transition-transform" />
+          <ChevronRight className="w-4 h-4 text-gray-500 transition-transform" />
         </button>
-        <div className="flex flex-col items-center gap-3 [writing-mode:vertical-lr] text-gray-500 font-semibold tracking-wide select-none">
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${col.indicator} rotate-90`} />
-            <span className="text-gray-900 whitespace-nowrap">{col.title}</span>
-            <span className="text-xs bg-gray-200/80 text-gray-600 px-1.5 py-0.5 rounded-full rotate-90">{tasks.length}</span>
+        
+        <div className="flex flex-col items-center gap-4 flex-1 mt-2">
+          <div className="flex flex-col items-center gap-2">
+            <div className={`w-2.5 h-2.5 rounded-full ${col.indicator}`} />
+            <span className="text-xs font-semibold bg-gray-200/90 text-gray-700 px-2 py-0.5 rounded-full">
+              {tasks.length}
+            </span>
           </div>
+          <span className="text-sm font-bold text-gray-800 tracking-wide whitespace-nowrap [writing-mode:vertical-rl] rotate-180 select-none">
+            {col.title}
+          </span>
         </div>
       </div>
     );
@@ -140,7 +147,7 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
 }) => {
   const updateTaskMutation = useUpdateTask();
 
-  const handleDropTask = (taskId: string, targetStatus: "To Do" | "In Progress" | "Done") => {
+  const handleDropTask = (taskId: string, targetStatus: TaskStatus) => {
     // Find the task to verify if status changed
     const task = tasks.find((t) => t._id === taskId);
     if (task && task.status !== targetStatus) {
@@ -174,6 +181,22 @@ const TaskBoard: React.FC<TaskBoardProps> = ({
       indicator: "bg-emerald-500",
       bgColor: "bg-emerald-50/40",
       borderColor: "border-t-emerald-500",
+    },
+    {
+      id: "Ready for test",
+      title: "Ready for test",
+      indicator: "bg-blue-400",
+      bgColor: "bg-blue-50/50",
+      borderColor: "border-t-blue-400",
+      defaultOpen: false,
+    },
+    {
+      id: "Approved",
+      title: "Approved",
+      indicator: "bg-purple-400",
+      bgColor: "bg-purple-50/50",
+      borderColor: "border-t-purple-400",
+      defaultOpen: false,
     },
   ];
 

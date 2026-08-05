@@ -65,7 +65,7 @@ const TasksPage = () => {
     return (
         <>
             <SEO title={`${project.name} | TaskFlow`} />
-            <div className="p-8 h-full flex flex-col">
+            <div className="p-8 h-full flex flex-col overflow-hidden">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3 mb-2">
@@ -143,6 +143,8 @@ const TasksPage = () => {
                                 <option value="To Do">To Do</option>
                                 <option value="In Progress">In Progress</option>
                                 <option value="Done">Done</option>
+                                <option value="Ready for test">Ready for test</option>
+                                <option value="Approved">Approved</option>
                             </select>
                         </div>
                         <div className="flex items-center gap-2">
@@ -168,7 +170,7 @@ const TasksPage = () => {
                 {tasksLoading ? (
                     <div className="flex-1 flex items-center justify-center text-gray-500">Loading tasks...</div>
                 ) : (
-                    <div className="flex-1 flex flex-col justify-between">
+                    <div className="flex-1 min-h-0 flex flex-col justify-between">
                         {viewMode === "board" ? (
                             <TaskBoard
                                 tasks={filteredTasks}

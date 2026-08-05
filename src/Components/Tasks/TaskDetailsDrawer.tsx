@@ -145,6 +145,8 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
                 <option value="To Do">To Do</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Done">Done</option>
+                <option value="Ready for test">Ready for test</option>
+                <option value="Approved">Approved</option>
               </select>
             </div>
 

@@ -105,7 +105,7 @@ export const useUpdateTask = () => {
     },
 
     // 2. If the mutation fails, use the context returned from onMutate to roll back
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       if (context?.previousQueriesData) {
         context.previousQueriesData.forEach(({ queryKey, data }) => {
           queryClient.setQueryData(queryKey, data);

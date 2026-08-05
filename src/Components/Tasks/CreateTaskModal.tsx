@@ -19,7 +19,7 @@ interface CreateTaskModalProps {
 
 const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId, members }) => {
   const { token } = useAppSelector((state) => state.auth);
-  
+
   const {
     register,
     handleSubmit,
@@ -37,7 +37,7 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
 
   const onSubmit = (data: CreateTaskSchemaType) => {
     if (!token) return;
-    
+
     mutate(
       { projectId, data, token },
       {
@@ -89,10 +89,9 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
             rows={3}
             className={`w-full rounded-md border px-3 py-2 text-sm outline-none transition-all resize-none
               placeholder:text-gray-400
-              ${
-                errors.description
-                  ? "border-red-500 bg-red-50 focus:ring-2 focus:ring-red-300"
-                  : "border-gray-300 bg-white focus:border-[#1a6b5a] focus:ring-2 focus:ring-[#1a6b5a]/30"
+              ${errors.description
+                ? "border-red-500 bg-red-50 focus:ring-2 focus:ring-red-300"
+                : "border-gray-300 bg-white focus:border-[#1a6b5a] focus:ring-2 focus:ring-[#1a6b5a]/30"
               }`}
             {...register("description")}
           />
@@ -110,6 +109,8 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
             >
               <option value="To Do">To Do</option>
               <option value="In Progress">In Progress</option>
+              <option value="Ready for test">Ready for test</option>
+              <option value="Approved">Approved</option>
               <option value="Done">Done</option>
             </select>
           </div>
@@ -129,9 +130,8 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700">Assignee</label>
             <select
-              className={`w-full rounded-md shadow-sm focus:ring-[#1a6b5a] sm:text-sm py-2 ${
-                errors.assignee ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#1a6b5a]"
-              }`}
+              className={`w-full rounded-md shadow-sm focus:ring-[#1a6b5a] sm:text-sm py-2 ${errors.assignee ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#1a6b5a]"
+                }`}
               {...register("assignee")}
             >
               <option value="">Select Assignee</option>
@@ -148,9 +148,8 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({ isOpen, onClose, projectId,
             <label className="text-sm font-medium text-gray-700">Due date</label>
             <input
               type="date"
-              className={`w-full rounded-md shadow-sm focus:ring-[#1a6b5a] sm:text-sm py-2 ${
-                errors.dueDate ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#1a6b5a]"
-              }`}
+              className={`w-full rounded-md shadow-sm focus:ring-[#1a6b5a] sm:text-sm py-2 ${errors.dueDate ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#1a6b5a]"
+                }`}
               {...register("dueDate", { valueAsDate: true })}
             />
             {errors.dueDate && <p className="text-xs text-red-600">{errors.dueDate.message}</p>}

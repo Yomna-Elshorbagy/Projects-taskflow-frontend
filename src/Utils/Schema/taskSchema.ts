@@ -17,7 +17,7 @@ export const createTaskSchema = z.object({
     .string()
     .regex(/^[0-9a-fA-F]{24}$/, "Invalid assignee id"),
 
-  status: z.enum(["To Do", "In Progress", "Done"]).optional(),
+  status: z.enum(["To Do", "In Progress", "Done", "Ready for test", "Approved"]).optional(),
 
   priority: z.enum(["Low", "Medium", "High"]).optional(),
 });
@@ -42,7 +42,7 @@ export const updateTaskSchema = z.object({
     .regex(/^[0-9a-fA-F]{24}$/, "Invalid assignee id")
     .optional(),
 
-  status: z.enum(["To Do", "In Progress", "Done"]).optional(),
+  status: z.enum(["To Do", "In Progress", "Done", "Ready for test", "Approved"]).optional(),
 
   priority: z.enum(["Low", "Medium", "High"]).optional(),
 });
