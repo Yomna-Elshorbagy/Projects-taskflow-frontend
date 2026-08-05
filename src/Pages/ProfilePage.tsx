@@ -91,7 +91,7 @@ export default function ProfilePage() {
   /* ─── loading skeleton ────────────────────────── */
   if (isLoading) {
     return (
-      <div className="flex h-full min-h-screen w-full items-center justify-center bg-[#f4f7f6]">
+      <div className="flex h-full w-full items-center justify-center bg-[#f4f7f6]">
         <div className="flex flex-col items-center gap-4">
           <div className="relative h-14 w-14">
             <div className="absolute inset-0 rounded-full border-4 border-[#1a6b5a]/20" />
@@ -106,7 +106,7 @@ export default function ProfilePage() {
   /* ─── error state ─────────────────────────────── */
   if (isError) {
     return (
-      <div className="flex h-full min-h-screen w-full items-center justify-center bg-[#f4f7f6]">
+      <div className="flex h-full w-full items-center justify-center bg-[#f4f7f6]">
         <div className="flex flex-col items-center gap-3 rounded-xl border border-red-100 bg-white p-10 shadow-sm">
           <span className="text-4xl">⚠️</span>
           <p className="text-base font-semibold text-gray-700">Could not load your profile</p>
@@ -124,7 +124,7 @@ export default function ProfilePage() {
       />
 
       {/* ── page wrapper ── */}
-      <div className="min-h-screen bg-[#f4f7f6] px-4 py-10">
+      <div className="h-full overflow-y-auto bg-[#f4f7f6] px-4 py-10">
         <div className="mx-auto max-w-4xl space-y-6">
 
           {/* ── page header ── */}
