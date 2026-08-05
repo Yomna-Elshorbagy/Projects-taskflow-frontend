@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "../Store/store";
 
 import type { CreateTaskSchemaType, UpdateTaskSchemaType } from "../Utils/Schema/taskSchema";
 import { createTask, deleteTask, getTaskById, getTasks, updateTask } from "../Apis/TasksApi";
@@ -59,6 +60,7 @@ export const useCreateTask = () => {
 
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
+  const { user } = useAppSelector((state) => state.auth);
 
   return useMutation({
     mutationFn: ({
@@ -81,7 +83,7 @@ export const useUpdateTask = () => {
       // Snapshot the previous values across all active task lists for this project
       const queryCache = queryClient.getQueryCache();
       const queries = queryCache.findAll({ queryKey: ["tasks", projectId] });
-      
+
       const previousQueriesData = queries.map((query) => ({
         queryKey: query.queryKey,
         data: query.state.data,
@@ -93,9 +95,27 @@ export const useUpdateTask = () => {
           if (!old || !old.data) return old;
           return {
             ...old,
-            data: old.data.map((task: any) =>
-              task._id === taskId ? { ...task, ...data } : task
-            ),
+            data: old.data.map((task: any) => {
+              if (task._id === taskId) {
+                const newStatusHistory = task.statusHistory ? [...task.statusHistory] : [];
+                if (data.status && data.status !== task.status) {
+                  newStatusHistory.push({
+                    oldStatus: task.status,
+                    newStatus: data.status,
+                    changedAt: new Date().toISOString(),
+                    changedBy: { userName: user?.userName || "Unknown", _id: user?._id || "optimistic" },
+                  });
+                }
+
+                return {
+                  ...task,
+                  ...data,
+                  assignee: task.assignee,
+                  statusHistory: newStatusHistory,
+                };
+              }
+              return task;
+            }),
           };
         });
       });
