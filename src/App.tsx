@@ -18,18 +18,18 @@ import "./App.css";
 const queryClient = new QueryClient();
 
 /** Redirect authenticated users away from auth pages */
-function RequireGuest({ children }: { children: React.ReactNode }) {
+export function RequireGuest({ children }: { children: React.ReactNode }) {
   const token = useAppSelector((state) => state.auth.token);
   return token ? <Navigate to="/" replace /> : <>{children}</>;
 }
 
 /** Redirect unauthenticated users to login */
-function RequireAuth({ children }: { children: React.ReactNode }) {
+export function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = useAppSelector((state) => state.auth.token);
   return token ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
-function AppRoutes() {
+export function AppRoutes() {
   return (
     <BrowserRouter>
       <Suspense fallback={<div className="flex h-screen w-full items-center justify-center text-[#1a6b5a] font-medium">Loading TaskFlow...</div>}>
