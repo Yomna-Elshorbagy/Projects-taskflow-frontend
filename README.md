@@ -10,6 +10,7 @@ TaskFlow is a modern, high-performance project and task management application d
 - **Kanban & Table Views**: Inside a project, users can seamlessly toggle between a visual, color-coded Kanban board (with distinct columns for To Do, In Progress, Done) and a dense, sortable data-table view for tasks.
 - **Task Management**: New tasks are created via the **"Create Task" Modal**, opened from the "New task" button in the project header. Tasks require a title, description, due date, and an assignee (selectable from the project's member list).
 - **Interactive Task Drawer**: Clicking on any Task Card (or table row) slides open the **Task Details Drawer** from the right side of the screen. This drawer allows users to seamlessly edit task information, update statuses, and change priorities without losing their place on the board.
+- **Real-Time Task Chat**: Integrated Socket.io for instant, real-time communication within specific tasks. Includes live typing indicators, chat history fetching, and seamless WebSocket authentication via a dedicated chat tab in the Task Drawer.
 - **Activity Log Tracking**: Embedded within the Task Details Drawer is a real-time **Activity Log** that tracks the historical status changes of the task, showing exactly who moved a task and when.
 - **Server-Side Pagination, Filtering & Search**: Shifted client-side computations to high-performance, server-side processing for both Projects and Tasks, enabling seamless, paginated data loads, dynamic title/description search, and state filtering.
 - **Premium Pagination Component**: Added a responsive, glassmorphic custom `Pagination` component featuring items range indicators, previous/next controls, page button groups, page limit dropdowns, and quick page jump inputs.
@@ -96,7 +97,8 @@ Because this is a decoupled frontend architecture, it does not have a direct dat
 **Authentication Flow:**
 - On login/signup, the API returns a JWT token.
 - This token is intercepted by the Redux store, decoded (to extract user information like role and ID), and saved.
-- All protected API calls attach this token to the `authentication` header.
+- All protected REST API calls attach this token to the `authentication` header.
+- WebSocket (Socket.io) connections authenticate by passing this token during the initial connection handshake.
 
 ## 🧪 Testing and Linting
 
