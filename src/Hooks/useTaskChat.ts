@@ -13,7 +13,7 @@ interface UseTaskChatReturn {
   isLoadingHistory: boolean;
   sendMessage: (content: string) => void;
   notifyTyping: () => void;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function useTaskChat(taskId: string): UseTaskChatReturn {
