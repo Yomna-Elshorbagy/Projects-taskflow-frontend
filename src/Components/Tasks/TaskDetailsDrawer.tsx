@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,8 @@ import type { Task } from "../../Interfaces/ITasks";
 import { updateTaskSchema, type UpdateTaskSchemaType } from "../../Utils/Schema/taskSchema";
 import { useAppSelector } from "../../Store/store";
 import Swal from "sweetalert2";
-import { Trash2 } from "lucide-react";
+import { Trash2, FileText, MessageSquare } from "lucide-react";
+import TaskChatPanel from "./TaskChatPanel";
 
 interface TaskDetailsDrawerProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
   const { token } = useAppSelector((state) => state.auth);
   const { mutate: updateTask, isPending: isUpdating } = useUpdateTask();
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
+  const [activeTab, setActiveTab] = useState<"details" | "chat">("details");
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateTaskSchemaType>({
     resolver: zodResolver(updateTaskSchema) as any,
@@ -105,14 +107,12 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 h-full flex flex-col">
-        {/* Header Information */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">
-              Task · #{task._id.slice(-4)}
-            </span>
-          </div>
+      <div className="h-full flex flex-col">
+        {/* ── Header: task ID + delete ── */}
+        <div className="flex items-center justify-between px-6 pt-4 pb-3">
+          <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">
+            Task · #{task._id.slice(-4)}
+          </span>
           <button
             onClick={handleDelete}
             disabled={isDeleting}
@@ -123,6 +123,39 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
           </button>
         </div>
 
+        {/* ── Tab Bar ── */}
+        <div className="flex border-b border-gray-100 px-6">
+          <button
+            onClick={() => setActiveTab("details")}
+            className={`flex items-center gap-1.5 px-1 py-2.5 text-sm font-medium border-b-2 transition-colors mr-6 ${
+              activeTab === "details"
+                ? "border-[#1a6b5a] text-[#1a6b5a]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            Details
+          </button>
+          <button
+            onClick={() => setActiveTab("chat")}
+            className={`flex items-center gap-1.5 px-1 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "chat"
+                ? "border-[#1a6b5a] text-[#1a6b5a]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            Chat
+          </button>
+        </div>
+
+        {/* ── Tab Content ── */}
+        {activeTab === "chat" ? (
+          <div className="flex-1 min-h-0">
+            <TaskChatPanel taskId={task._id} taskTitle={task.title} />
+          </div>
+        ) : (
+        <div className="flex-1 overflow-y-auto p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 flex-1">
           {/* Title Edit */}
           <div>
@@ -255,6 +288,8 @@ const TaskDetailsDrawer: FC<TaskDetailsDrawerProps> = ({
             </button>
           </div>
         </form>
+        </div>
+        )}
       </div>
     </Drawer>
   );

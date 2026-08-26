@@ -1,9 +1,10 @@
 // Shared green marketing panel used on both Signup and Login pages
 
 const stats = [
-  { label: "To Do", value: "6" },
+  { label: "New Task", value: "6" },
+  { label: "Ready", value: "2" },
   { label: "In Progress", value: "3" },
-  { label: "Done", value: "12" },
+  { label: "Ready for Test", value: "12" },
 ];
 
 function AuthPanel() {
@@ -27,11 +28,11 @@ function AuthPanel() {
         </p>
 
         {/* Stat cards */}
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {stats.map(({ label, value }) => (
             <div
               key={label}
-              className="flex-1 rounded-xl bg-white/10 backdrop-blur-sm px-4 py-4"
+              className="rounded-xl bg-white/10 backdrop-blur-sm px-4 py-4"
             >
               <p className="text-[10px] font-semibold uppercase tracking-wider opacity-70">
                 {label}
