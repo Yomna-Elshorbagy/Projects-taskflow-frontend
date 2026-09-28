@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "../Store/store";
 
 import type { CreateTaskSchemaType, UpdateTaskSchemaType } from "../Utils/Schema/taskSchema";
-import { createTask, deleteTask, getTaskById, getTasks, updateTask } from "../Apis/TasksApi";
+import { createTask, deleteTask, getTaskById, getTasks, updateTask, createAiTaskBreakdown } from "../Apis/TasksApi";
 
 export const useGetTasks = (
   projectId: string,
@@ -166,3 +166,25 @@ export const useDeleteTask = () => {
     },
   });
 };
+
+export const useCreateAiTaskBreakdown = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      data,
+      token,
+    }: {
+      projectId: string;
+      data: { description: string };
+      token: string;
+    }) => createAiTaskBreakdown(projectId, data, token),
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tasks", variables.projectId],
+      });
+    },
+  });
+};

@@ -102,3 +102,19 @@ export const deleteTask = async (
 
   return res.data;
 };
+
+export const createAiTaskBreakdown = async (
+  projectId: string,
+  data: { description: string },
+  token: string
+): Promise<{ success: boolean; data: TaskResponse[] }> => {
+  const res = await axios.post<{ success: boolean; data: TaskResponse[] }>(
+    `${baseURL}/projects/${projectId}/tasks/ai-breakdown`,
+    data,
+    {
+      headers: headers(token),
+    }
+  );
+
+  return res.data;
+};

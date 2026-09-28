@@ -9,9 +9,11 @@ import AvatarGroup from "../Components/UI/AvatarGroup";
 import TaskBoard from "../Components/Tasks/TaskBoard";
 import TaskTable from "../Components/Tasks/TaskTable";
 import CreateTaskModal from "../Components/Tasks/CreateTaskModal";
+import AiTaskBreakdownModal from "../Components/Tasks/AiTaskBreakdownModal";
 import TaskDetailsDrawer from "../Components/Tasks/TaskDetailsDrawer";
 import ManageMembersModal from "../Components/Projects/ManageMembersModal";
 import Pagination from "../Components/UI/Pagination";
+import { Sparkles } from "lucide-react";
 import type { Task } from "../Interfaces/ITasks";
 
 const TasksPage = () => {
@@ -23,6 +25,7 @@ const TasksPage = () => {
     const [priorityFilter, setPriorityFilter] = useState("All priorities");
     const [viewMode, setViewMode] = useState<"board" | "table">("board");
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isAiModalOpen, setIsAiModalOpen] = useState(false);
     const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [page, setPage] = useState(1);
@@ -107,6 +110,13 @@ const TasksPage = () => {
                                 Members
                             </button>
                         )}
+                        <button
+                            onClick={() => setIsAiModalOpen(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-medium rounded-md hover:from-purple-600 hover:to-indigo-700 transition-colors"
+                        >
+                            <Sparkles className="w-4 h-4" />
+                            AI Breakdown
+                        </button>
                         <button
                             onClick={() => setIsCreateModalOpen(true)}
                             className="flex items-center gap-2 px-3 py-1.5 bg-[#1a6b5a] text-white text-sm font-medium rounded-md hover:bg-[#135244] transition-colors"
@@ -199,6 +209,18 @@ const TasksPage = () => {
             <CreateTaskModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
+                projectId={project._id}
+                members={[
+                    project.creator,
+                    ...(project.members || []).filter(
+                        (m) => m._id !== project.creator._id
+                    ),
+                ]}
+            />
+
+            <AiTaskBreakdownModal
+                isOpen={isAiModalOpen}
+                onClose={() => setIsAiModalOpen(false)}
                 projectId={project._id}
                 members={[
                     project.creator,
