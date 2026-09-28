@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useGetTasks } from "../Hooks/useTask";
+import { useGetTasks, useAiSearchTasks } from "../Hooks/useTask";
 import { useGetProjectById } from "../Hooks/useProject";
 import { useAppSelector } from "../Store/store";
 import { Plus, Search, LayoutGrid, List, Users } from "lucide-react";
@@ -14,6 +14,7 @@ import TaskDetailsDrawer from "../Components/Tasks/TaskDetailsDrawer";
 import ManageMembersModal from "../Components/Projects/ManageMembersModal";
 import Pagination from "../Components/UI/Pagination";
 import { Sparkles } from "lucide-react";
+import Swal from "sweetalert2";
 import type { Task } from "../Interfaces/ITasks";
 
 const TasksPage = () => {
@@ -31,12 +32,46 @@ const TasksPage = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(5);
 
+    const [aiSearchQuery, setAiSearchQuery] = useState("");
+    const [aiFilteredTasks, setAiFilteredTasks] = useState<Task[] | null>(null);
+    const [isAiSearching, setIsAiSearching] = useState(false);
+    const aiSearchMutation = useAiSearchTasks();
+
     const { user } = useAppSelector((state) => state.auth);
 
     // Reset page to 1 when filters or search change
     useEffect(() => {
         setPage(1);
     }, [search, statusFilter, priorityFilter]);
+
+    const handleAiSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && aiSearchQuery.trim() && project) {
+            setIsAiSearching(true);
+            try {
+                const result = await aiSearchMutation.mutateAsync({
+                    projectId: project._id,
+                    data: { query: aiSearchQuery },
+                    token: token || "",
+                });
+                setAiFilteredTasks(result.data);
+            } catch (error: unknown) {
+                console.error("AI Search Failed", error);
+                const err = error as { response?: { data?: { message?: string } } };
+                Swal.fire({
+                    icon: "error",
+                    title: "Smart Search Error",
+                    text: err.response?.data?.message || "Failed to analyze your search query. Please try again.",
+                });
+            } finally {
+                setIsAiSearching(false);
+            }
+        }
+    };
+
+    const clearAiSearch = () => {
+        setAiSearchQuery("");
+        setAiFilteredTasks(null);
+    };
 
     // Fetch data
     const { data: projectData, isLoading: projectLoading } = useGetProjectById(projectId || "", token || "");
@@ -50,6 +85,7 @@ const TasksPage = () => {
 
     const project = projectData?.data;
     const filteredTasks = tasksData?.data || [];
+    const displayTasks = aiFilteredTasks !== null ? aiFilteredTasks : filteredTasks;
     const pagination = tasksData?.pagination || { page: 1, limit: 10, totalItems: 0, totalPages: 1 };
 
     if (projectLoading) {
@@ -129,16 +165,34 @@ const TasksPage = () => {
                 <p className="text-sm text-gray-500 mb-8 max-w-2xl">{project.description}</p>
 
                 {/* Toolbar */}
-                <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-4">
-                    <div className="relative w-64">
-                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search tasks..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-9 pr-4 py-1.5 bg-gray-50 border-none rounded-md text-sm outline-none focus:ring-1 focus:ring-[#1a6b5a]"
-                        />
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-gray-100 pb-4">
+                    <div className="flex items-center gap-4">
+                        <div className="relative w-64">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search tasks..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full pl-9 pr-4 py-1.5 bg-gray-50 border-none rounded-md text-sm outline-none focus:ring-1 focus:ring-[#1a6b5a]"
+                            />
+                        </div>
+
+                        <div className="relative w-72">
+                            <Sparkles className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${isAiSearching ? 'text-purple-300 animate-pulse' : 'text-purple-500'}`} />
+                            <input
+                                type="text"
+                                placeholder={isAiSearching ? "AI is thinking..." : "Ask AI to filter tasks..."}
+                                value={aiSearchQuery}
+                                onChange={(e) => setAiSearchQuery(e.target.value)}
+                                onKeyDown={handleAiSearch}
+                                disabled={isAiSearching}
+                                className="w-full pl-9 pr-14 py-1.5 bg-purple-50 border border-purple-100 rounded-md text-sm outline-none focus:ring-1 focus:ring-purple-400 text-purple-900 placeholder-purple-400"
+                            />
+                            {aiFilteredTasks !== null && !isAiSearching && (
+                                <button onClick={clearAiSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-purple-600 hover:text-purple-800">Clear</button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-6 text-sm">
@@ -171,7 +225,7 @@ const TasksPage = () => {
                             </select>
                         </div>
                         <div className="text-gray-400 text-xs font-medium ml-4">
-                            Showing {filteredTasks.length} of {pagination.totalItems} tasks
+                            Showing {displayTasks.length} {aiFilteredTasks !== null ? "(AI Filtered)" : `of ${pagination.totalItems}`} tasks
                         </div>
                     </div>
                 </div>
@@ -183,13 +237,13 @@ const TasksPage = () => {
                     <div className="flex-1 min-h-0 flex flex-col justify-between">
                         {viewMode === "board" ? (
                             <TaskBoard
-                                tasks={filteredTasks}
+                                tasks={displayTasks}
                                 onTaskClick={(task) => setSelectedTask(task)}
                                 projectId={projectId || ""}
                                 token={token || ""}
                             />
                         ) : (
-                            <TaskTable tasks={filteredTasks} onTaskClick={(task) => setSelectedTask(task)} />
+                            <TaskTable tasks={displayTasks} onTaskClick={(task) => setSelectedTask(task)} />
                         )}
 
                         {viewMode === "table" && (

@@ -7,7 +7,7 @@ import type {
 
 
 import { baseURL } from "../Constants/BaseUrl";
-import type { TaskResponse, TasksResponse } from "../Interfaces/ITasks";
+import type { TaskResponse, TasksResponse, Task } from "../Interfaces/ITasks";
 import type { MessageResponse } from "../Interfaces/Iproject";
 
 const headers = (token: string) => ({
@@ -107,9 +107,25 @@ export const createAiTaskBreakdown = async (
   projectId: string,
   data: { description: string },
   token: string
-): Promise<{ success: boolean; data: TaskResponse[] }> => {
-  const res = await axios.post<{ success: boolean; data: TaskResponse[] }>(
+): Promise<{ success: boolean; data: Task[] }> => {
+  const res = await axios.post<{ success: boolean; data: Task[] }>(
     `${baseURL}/projects/${projectId}/tasks/ai-breakdown`,
+    data,
+    {
+      headers: headers(token),
+    }
+  );
+
+  return res.data;
+};
+
+export const aiSearchTasks = async (
+  projectId: string,
+  data: { query: string },
+  token: string
+): Promise<{ success: boolean; data: Task[]; message: string; filtersApplied: any }> => {
+  const res = await axios.post<{ success: boolean; data: Task[]; message: string; filtersApplied: any }>(
+    `${baseURL}/projects/${projectId}/tasks/ai-search`,
     data,
     {
       headers: headers(token),
